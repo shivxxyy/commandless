@@ -1,0 +1,11 @@
+# Keep the Vercel upload to just the proxy (api/) + a minimal public dir.
+node_modules
+dist
+src
+src-tauri
+.git
+.github
+scripts
+*.log
+.env
+server/.env
