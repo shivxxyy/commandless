@@ -1,0 +1,111 @@
+@import "@xterm/xterm/css/xterm.css";
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color-scheme: dark;
+  --bg-base: #050706;
+  --bg-glow: rgba(39, 163, 95, 0.06);
+  --accent: #27a35f;
+}
+
+/* Theme variants — all black + green, varying tint/intensity. Serious, calm. */
+[data-theme="dark"] {
+  --bg-base: #050706; /* Carbon */
+  --bg-glow: rgba(39, 163, 95, 0.05);
+  --accent: #27a35f;
+}
+[data-theme="midnight"] {
+  --bg-base: #040705; /* Forest — deeper green-black */
+  --bg-glow: rgba(31, 139, 79, 0.08);
+  --accent: #2eaa64;
+}
+[data-theme="aurora"] {
+  --bg-base: #050807; /* Emerald — brighter accent */
+  --bg-glow: rgba(63, 192, 125, 0.09);
+  --accent: #3fc07d;
+}
+[data-theme="minimal"] {
+  --bg-base: #08090a; /* Graphite — muted, almost no glow */
+  --bg-glow: rgba(120, 130, 125, 0.03);
+  --accent: #4a8f68;
+}
+
+* {
+  border-color: rgba(255, 255, 255, 0.06);
+}
+
+html,
+body,
+#root {
+  height: 100%;
+  margin: 0;
+}
+
+body {
+  background-color: var(--bg-base);
+  color: theme("colors.ink.DEFAULT");
+  font-family: theme("fontFamily.sans");
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  overflow: hidden;
+  letter-spacing: -0.01em;
+}
+
+/* Ambient background — one restrained green wash, low and serious. */
+.ambient-bg {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  background: radial-gradient(55rem 40rem at 50% -12%, var(--bg-glow), transparent 70%);
+  pointer-events: none;
+}
+
+@layer components {
+  /* Panels — darker, squared, minimal blur. */
+  .glass {
+    @apply rounded-2xl border border-white/[0.07] bg-graphite-850/85 backdrop-blur-md shadow-glass;
+  }
+  .glass-soft {
+    @apply rounded-xl border border-white/[0.06] bg-white/[0.02];
+  }
+  .gradient-text {
+    @apply text-accent-400;
+  }
+  .focus-ring {
+    @apply outline-none ring-0 focus-visible:ring-1 focus-visible:ring-accent-500/60;
+  }
+}
+
+::-webkit-scrollbar {
+  width: 9px;
+  height: 9px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 9999px;
+  border: 2px solid transparent;
+  background-clip: padding-box;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.16);
+  background-clip: padding-box;
+}
+
+.xterm {
+  height: 100%;
+  padding: 14px 16px;
+}
+.xterm-viewport::-webkit-scrollbar {
+  width: 9px;
+}
+
+.terminal-running {
+  box-shadow: theme("boxShadow.glow-run");
+  transition: box-shadow 0.4s ease;
+}

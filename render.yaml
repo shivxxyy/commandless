@@ -1,0 +1,28 @@
+# Render Blueprint for the CommandLess AI proxy.
+# Deploy: push this repo to GitHub, then on render.com → New → Blueprint,
+# pick this repo. Set OLLAMA_API_KEY and APP_TOKEN in the dashboard (they are
+# marked sync:false so they are never stored in the repo).
+services:
+  - type: web
+    name: commandless-proxy
+    runtime: docker
+    dockerfilePath: ./server/Dockerfile
+    dockerContext: .
+    plan: free
+    healthCheckPath: /health
+    autoDeploy: true
+    envVars:
+      - key: OLLAMA_API_KEY
+        sync: false
+      - key: APP_TOKEN
+        sync: false
+      - key: OLLAMA_MODEL
+        value: gpt-oss:120b
+      - key: OLLAMA_HOST
+        value: https://ollama.com
+      - key: RATE_PER_MIN
+        value: "15"
+      - key: DAILY_CAP
+        value: "1500"
+      - key: ALLOWED_ORIGIN
+        value: "*"

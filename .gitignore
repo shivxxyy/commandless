@@ -1,0 +1,29 @@
+# Dependencies
+node_modules
+.pnp
+.pnp.js
+
+# Build output
+dist
+dist-ssr
+*.local
+
+# Env
+.env
+.env.local
+.env.*.local
+server/.env
+
+# Editor
+.vscode/*
+!.vscode/extensions.json
+.idea
+.DS_Store
+
+# Rust / Tauri
+src-tauri/target
+src-tauri/gen
+
+# Logs
+*.log
+npm-debug.log*
