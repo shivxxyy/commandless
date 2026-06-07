@@ -12,6 +12,7 @@
     "tauri:dev": "tauri dev",
     "tauri:build": "tauri build",
     "proxy": "node server/index.mjs",
+    "downloads": "node scripts/downloads.mjs",
     "test": "vitest run",
     "test:watch": "vitest",
     "typecheck": "tsc --noEmit"
@@ -28,6 +29,7 @@
     "framer-motion": "^11.11.0",
     "lucide-react": "^0.456.0",
     "nanoid": "^5.0.7",
+    "posthog-js": "^1.382.0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "tailwind-merge": "^2.5.4",

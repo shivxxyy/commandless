@@ -6,6 +6,7 @@ import { useSettingsStore } from "@/stores/settingsStore";
 import { toast } from "@/stores/toastStore";
 import { ptyWrite, isTauri } from "@/lib/terminal/ptyClient";
 import { detectError } from "@/lib/errors/explainer";
+import { track } from "@/lib/analytics";
 
 /**
  * Central place to run a suggested command in the active terminal and record
@@ -41,6 +42,11 @@ export function useCommandRunner() {
       const startedAt = Date.now();
       updateCard(cardId, { startedAt });
       useTerminalStore.getState().setRunning(activeTab.id, true);
+      track("command_run", {
+        source: suggestion.source,
+        risk_level: suggestion.riskLevel,
+        os: suggestion.os,
+      });
 
       try {
         // Writing the command + carriage return runs it in the live PTY.

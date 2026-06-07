@@ -9,6 +9,7 @@ import { bestRecipe } from "@/lib/recipes/match";
 import type { Recipe } from "@/lib/recipes/types";
 import { aiToSuggestion, recipeToSuggestion } from "@/lib/suggest";
 import { classifyRisk } from "@/lib/risk/classifier";
+import { track } from "@/lib/analytics";
 
 export type SuggestStatus =
   | "idle"
@@ -78,6 +79,12 @@ export function useSuggest() {
     (recipe: Recipe, inputs: Record<string, string>, intent: string) => {
       const suggestion = recipeToSuggestion(recipe, { os, cwd: cwd(), inputs });
       useHistoryStore.getState().addTurn(intent, suggestion.command);
+      track("command_resolved", {
+        source: "recipe",
+        recipe_id: recipe.id,
+        risk_level: suggestion.riskLevel,
+        os: suggestion.os,
+      });
       setState({
         ...INITIAL,
         status: "ready",
@@ -92,6 +99,9 @@ export function useSuggest() {
     async (intent: string) => {
       const trimmed = intent.trim();
       if (!trimmed) return;
+
+      // Capture the prompt the user typed (early-access product insight).
+      track("intent_submitted", { intent: trimmed });
 
       // 1) Try a built-in recipe first (deterministic, no AI).
       const recipe = bestRecipe(trimmed);
@@ -151,6 +161,11 @@ export function useSuggest() {
         const suggestion = aiToSuggestion(ai, os);
         if (requireConfirmationForAllAi) suggestion.requiresConfirmation = true;
         useHistoryStore.getState().addTurn(trimmed, suggestion.command);
+        track("command_resolved", {
+          source: "ai",
+          risk_level: suggestion.riskLevel,
+          os: suggestion.os,
+        });
         setState({ ...INITIAL, status: "ready", suggestion, intent: trimmed });
       } catch (err) {
         setState({

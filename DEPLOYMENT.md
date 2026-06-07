@@ -58,6 +58,8 @@ repository secret**, add:
 | ------------------- | ------------------------------------------------- |
 | `VITE_AI_PROXY_URL` | `https://<your-proxy-url>/api/ai`                 |
 | `VITE_APP_TOKEN`    | the same random string you set as `APP_TOKEN`     |
+| `VITE_POSTHOG_KEY`  | your PostHog project key (optional — see below)   |
+| `VITE_POSTHOG_HOST` | `https://us.i.posthog.com` (or `eu`) (optional)   |
 
 `GITHUB_TOKEN` is provided automatically.
 
@@ -93,6 +95,32 @@ AI works out of the box (it calls your hosted proxy). The terminal, recipes,
 risk engine, and error explainer work regardless.
 
 ---
+
+## Analytics (who's using it, what they ask, from where)
+
+Three sources cover it:
+
+- **Downloads:** `npm run downloads <owner>/<repo>` prints per-asset and total
+  download counts from the GitHub Releases API. (Use `GITHUB_TOKEN=…` for a
+  higher rate limit.)
+- **Product usage:** [PostHog](https://posthog.com) (free tier). Create a
+  project, copy the **Project API key**, and set `VITE_POSTHOG_KEY` (+
+  `VITE_POSTHOG_HOST`) as release secrets. The app then reports, per anonymous
+  install id:
+  - `app_opened`, `onboarding_completed`
+  - `intent_submitted` — **includes the prompt text** the user typed
+  - `command_resolved` (recipe vs AI, risk level), `command_run`
+  - `error_detected` (which error pattern)
+  - PostHog adds **geo (country/city)** from IP and gives you unique users,
+    DAU/retention, and funnels out of the box.
+- **AI request volume/timing:** also visible in the proxy logs (`[req]`/`[ok]`).
+
+Notes:
+- The PostHog project key is a client-side ingestion key — safe to ship.
+- Users can opt out via **Settings → Share anonymous usage analytics** (on by
+  default). Terminal output is never sent to analytics; only prompt text +
+  metadata.
+- Leave `VITE_POSTHOG_KEY` unset to ship with analytics fully disabled.
 
 ## Upgrading later
 

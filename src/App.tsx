@@ -3,6 +3,7 @@ import { useSettingsStore } from "@/stores/settingsStore";
 import { useUiStore } from "@/stores/uiStore";
 import { useKeyboardShortcuts } from "@/hooks/useKeyboardShortcuts";
 import { getHostInfo } from "@/lib/terminal/host";
+import { initAnalytics, track } from "@/lib/analytics";
 import { AppShell } from "@/components/layout/AppShell";
 import { OnboardingFlow } from "@/components/onboarding/OnboardingFlow";
 import { ToastViewport } from "@/components/ui/ToastViewport";
@@ -24,6 +25,13 @@ export default function App() {
       if (!cancelled) {
         setHostInfo(info);
         setReady(true);
+        const s = useSettingsStore.getState();
+        initAnalytics({
+          os: info.os,
+          skill_level: s.skillLevel,
+          ai_provider: s.aiProvider,
+        });
+        track("app_opened", { os: info.os });
       }
     });
     return () => {

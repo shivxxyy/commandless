@@ -15,6 +15,7 @@ import { useSettingsStore, type SkillLevel } from "@/stores/settingsStore";
 import type { AiProviderKind } from "@/lib/ai/types";
 import { Button } from "@/components/ui/Button";
 import { LogoMark } from "@/components/ui/Logo";
+import { track } from "@/lib/analytics";
 import { cn } from "@/lib/utils/cn";
 
 type AiChoice = AiProviderKind | "later";
@@ -35,6 +36,7 @@ export function OnboardingFlow() {
       aiProvider: ai === "later" ? "proxy" : ai,
       shell,
     });
+    track("onboarding_completed", { skill_level: skill, ai_choice: ai, shell });
     complete();
   };
 

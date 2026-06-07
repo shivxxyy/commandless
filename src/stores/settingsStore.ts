@@ -19,6 +19,8 @@ export interface Settings {
   requireConfirmationForAllAi: boolean;
   /** When on, recent terminal output is included in AI requests. */
   shareTerminalOutput: boolean;
+  /** Anonymous product analytics (PostHog). */
+  analyticsEnabled: boolean;
   shell: string;
   skillLevel: SkillLevel;
 }
@@ -54,6 +56,7 @@ const DEFAULTS: PersistedSettings = {
   allowAiCustomCommands: true,
   requireConfirmationForAllAi: false,
   shareTerminalOutput: false,
+  analyticsEnabled: true,
   shell: "",
   skillLevel: "comfortable",
   onboardingComplete: false,
@@ -71,6 +74,7 @@ function persist(state: SettingsState) {
     allowAiCustomCommands: state.allowAiCustomCommands,
     requireConfirmationForAllAi: state.requireConfirmationForAllAi,
     shareTerminalOutput: state.shareTerminalOutput,
+    analyticsEnabled: state.analyticsEnabled,
     shell: state.shell,
     skillLevel: state.skillLevel,
     onboardingComplete: state.onboardingComplete,

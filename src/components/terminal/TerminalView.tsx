@@ -21,6 +21,7 @@ import {
   unregisterTerminal,
 } from "@/lib/terminal/registry";
 import { appendOutput, clearOutput } from "@/lib/terminal/output";
+import { track } from "@/lib/analytics";
 
 const XTERM_THEME = {
   background: "#070a09",
@@ -143,6 +144,7 @@ export function TerminalView({
         appendOutput(tab.id, data);
         const pattern = detectError(data);
         if (pattern) {
+          track("error_detected", { pattern: pattern.id });
           useHistoryStore.getState().addInsight({
             title: pattern.title,
             whatHappened: pattern.whatHappened,

@@ -8,6 +8,7 @@ import {
 } from "@/stores/settingsStore";
 import { useHistoryStore, exportData } from "@/stores/historyStore";
 import { toast } from "@/stores/toastStore";
+import { setAnalyticsEnabled } from "@/lib/analytics";
 import type { AiProviderKind } from "@/lib/ai/types";
 import { cn } from "@/lib/utils/cn";
 
@@ -144,6 +145,15 @@ export function SettingsView() {
             hint="Sends recent output to your AI provider so follow-ups like “export that to a CSV” can use real results. Off by default."
             checked={s.shareTerminalOutput}
             onChange={(v) => update({ shareTerminalOutput: v })}
+          />
+          <Toggle
+            label="Share anonymous usage analytics"
+            hint="Helps us understand what people ask and improve CommandLess."
+            checked={s.analyticsEnabled}
+            onChange={(v) => {
+              update({ analyticsEnabled: v });
+              setAnalyticsEnabled(v);
+            }}
           />
         </Group>
 
