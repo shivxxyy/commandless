@@ -14,6 +14,7 @@ import { useHistoryStore } from "@/stores/historyStore";
 import { useUiStore } from "@/stores/uiStore";
 import { useSettingsStore } from "@/stores/settingsStore";
 import { useTerminalStore } from "@/stores/terminalStore";
+import { ptyWrite, isTauri } from "@/lib/terminal/ptyClient";
 import { toast } from "@/stores/toastStore";
 import { CommandCard } from "./CommandCard";
 import { RecipeInputs } from "./RecipeInputs";
@@ -81,11 +82,12 @@ export function IntentBar() {
     };
     type DemoStep = { intent: string; run: boolean; hold?: number };
     const steps: DemoStep[] = [
+      { intent: "what is using port 3000?", run: false, hold: 2600 }, // cold open
       { intent: "find large files here", run: true, hold: 1800 },
       { intent: "show my git changes", run: true, hold: 1800 },
       { intent: "show disk usage", run: true, hold: 1800 },
-      { intent: "rename all .jpeg files to .jpg", run: false, hold: 3200 },
-      { intent: "kill the process using port 5173", run: false, hold: 3600 },
+      { intent: "rename all .jpeg files to .jpg", run: false, hold: 3200 }, // AI
+      { intent: "kill the process using port 5173", run: false, hold: 3800 }, // dangerous
     ];
     (async () => {
       await sleep(600);
@@ -106,6 +108,23 @@ export function IntentBar() {
         ) {
           void run(suggestionRef.current);
           setValue("");
+          await sleep(2600);
+        }
+      }
+      // Final beat: prove it's a real terminal — type a normal command live.
+      if (!cancelled) {
+        reset();
+        setValue("");
+        await sleep(900);
+        const tab = useTerminalStore.getState().activeTab();
+        if (isTauri() && tab) {
+          for (const ch of "ls -la") {
+            if (cancelled) break;
+            await ptyWrite(tab.sessionId, ch);
+            await sleep(70);
+          }
+          await sleep(400);
+          if (!cancelled) await ptyWrite(tab.sessionId, "\r");
           await sleep(2600);
         }
       }

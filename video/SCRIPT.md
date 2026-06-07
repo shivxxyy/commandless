@@ -23,25 +23,26 @@ Tagline: **Terminal power. No command memorization.**
 
 ---
 
-## How to capture the screen footage
+## How to capture the screen footage — ONE take
 
-1. Have the **real app** running with the local proxy (for the AI beat):
+The demo reel is fully self-playing now: cold open → all 5 feature beats → a real
+`ls -la` in the terminal. You just record while it plays (~40s).
+
+1. Run the app + proxy (proxy powers the AI "rename" beat):
    ```bash
-   npm run proxy        # terminal 1 (AI for beat 5's "rename" card)
-   npm run tauri:dev    # terminal 2 (the app)
+   npm run proxy        # terminal 1
+   npm run tauri:dev    # terminal 2
    ```
-2. Resize the window to a clean 16:9-ish shape; hide other windows.
-3. **Beats 3–6 are automated.** Trigger the demo reel:
-   - Press **⌘⇧D** (or Command Palette → "Play demo reel").
-   - It types each prompt, shows the card, and runs the safe ones on a clean
-     cadence. Record this whole run (screen capture).
-4. **Beat 1 (cold open)** and **beat 7 (real terminal)**: record separately —
-   just type `what's using port 3000?` once for the cold open, and a normal
-   command (`ls -la`) for beat 7.
-5. Record at the highest resolution your screen allows; you'll crop/zoom in the edit.
+2. Resize the window to a clean shape; close other windows.
+3. Start your screen recorder (`⌘⇧5` → record the window).
+4. Press **⌘⇧D** (or Command Palette → "Play demo reel") and **don't touch
+   anything.** It types every prompt, shows each card, runs the safe ones, shows
+   the dangerous red card, and finally runs `ls -la` in the real terminal.
+5. When it returns to the empty input, wait ~2s and **stop recording.** Done —
+   that single clip is all your footage.
 
-> macOS capture: `⌘⇧5` → Record Selected Portion (or whole window). Tip: turn on
-> "Show mouse clicks" on so taps read on camera.
+> Record at the highest resolution available; you'll crop/zoom in the edit. The
+> VO + music get layered on top in CapCut (see PRODUCTION.md).
 
 VO audio is pre-generated in `video/voiceover/` (see PRODUCTION.md to regenerate
 with a nicer voice). Word-for-word VO lines are the table above.
