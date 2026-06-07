@@ -31,6 +31,8 @@ npm-debug.log*
 
 # Video assets (generated/recorded — keep docs + scripts, not binaries)
 video/voiceover/
+video/frames/
+video/.tmp/
 video/*.mp4
 video/*.mov
 video/*.aiff
