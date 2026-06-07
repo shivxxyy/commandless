@@ -25,27 +25,34 @@ The repo already contains `render.yaml` (proxy) and
 
 ---
 
-## 1. Deploy the proxy (Render — free tier)
+## 1. Deploy the proxy (Vercel)
 
-The proxy is a Docker service. `render.yaml` is a ready Blueprint.
+The proxy runs as Vercel serverless functions (`api/ai/command.js`,
+`api/ai/explain.js`, `api/health.js`) sharing `server/core.mjs`. `vercel.json`
+configures it as a proxy-only deployment (no frontend build).
 
-1. Go to <https://render.com> → **New → Blueprint** → pick your repo.
-2. Render reads `render.yaml` and creates the `commandless-proxy` service.
-3. Set the two secret env vars (marked `sync:false`, so not in the repo):
+1. Go to <https://vercel.com> → **Add New → Project** → import
+   `shivxxyy/commandless`.
+2. Framework preset: **Other** (vercel.json already skips the frontend build).
+3. Add environment variables (Project → Settings → Environment Variables):
    - `OLLAMA_API_KEY` — your Ollama Cloud key.
-   - `APP_TOKEN` — any random string (e.g. `openssl rand -hex 16`). The app
-     must send the same value; you'll set it as `VITE_APP_TOKEN` below.
-4. Deploy. You'll get a URL like `https://commandless-proxy.onrender.com`.
-5. Verify: open `https://<your-url>/health` → `{"ok":true,"hasKey":true}`.
+   - `APP_TOKEN` — the random string the app sends (= `VITE_APP_TOKEN`).
+   - `OLLAMA_MODEL` — e.g. `gpt-oss:120b` (optional).
+4. Deploy. You'll get a URL like `https://commandless.vercel.app`.
+5. Verify: open `https://<your-url>/api/health` → `{"ok":true,"hasKey":true}`.
+6. Your proxy base URL for the app is `https://<your-url>/api/ai`.
 
-> The same `server/Dockerfile` works on Fly.io (`fly launch`), Railway, a VM,
-> etc. Any host that runs the container and lets you set env vars is fine.
-> On Render's free tier the service sleeps when idle and cold-starts on the
-> first request (a few seconds) — fine for a demo; upgrade for always-on.
+> **CLI alternative:** `npx vercel --prod` (after `vercel login`), then
+> `vercel env add OLLAMA_API_KEY production` etc.
 
-**Cost/abuse guards** (already built in, tune via env vars):
-`RATE_PER_MIN` (per-IP/min, default 15), `DAILY_CAP` (global model calls/day,
-default 1500), and the `APP_TOKEN` gate. Your key never leaves the server.
+> **Serverless note:** functions are stateless, so the built-in rate
+> limit / daily cap are *best-effort* (per warm instance, reset on cold
+> starts). The `APP_TOKEN` gate is reliable. For a hard bill cap under real
+> traffic, back `checkLimits` with Vercel KV / Upstash Redis.
+>
+> The repo also still ships `server/Dockerfile` + `render.yaml`, so Render /
+> Fly / Railway / a VM remain drop-in alternatives (those run the long-lived
+> `server/index.mjs` with fully-working in-memory limits).
 
 ---
 

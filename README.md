@@ -136,9 +136,9 @@ Produces an `.msi` / `.exe` installer under
 
 To publish downloadable installers (macOS + Windows) and host the AI proxy so
 downloads work out of the box, see **[DEPLOYMENT.md](DEPLOYMENT.md)**. In short:
-deploy `server/` (Docker/`render.yaml`), set `VITE_AI_PROXY_URL` + `VITE_APP_TOKEN`
-as GitHub Actions secrets, then push a `v*` tag — CI builds both installers and
-publishes a GitHub Release.
+deploy the proxy (Vercel functions in `api/`, or Docker/`render.yaml`), set
+`VITE_AI_PROXY_URL` + `VITE_APP_TOKEN` as GitHub Actions secrets, then push a
+`v*` tag — CI builds both installers and publishes a GitHub Release.
 
 ---
 

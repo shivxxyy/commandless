@@ -1,0 +1,9 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "installCommand": "echo no-deps",
+  "buildCommand": "echo proxy-only",
+  "outputDirectory": "public",
+  "functions": {
+    "api/**/*.js": { "maxDuration": 60 }
+  }
+}
