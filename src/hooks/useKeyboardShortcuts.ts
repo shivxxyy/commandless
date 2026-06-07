@@ -12,6 +12,13 @@ export function useKeyboardShortcuts() {
       if (!mod) return;
       const ui = useUiStore.getState();
 
+      // ⌘⇧D / Ctrl+Shift+D: play the scripted demo reel (for recording).
+      if (e.shiftKey && e.key.toLowerCase() === "d") {
+        e.preventDefault();
+        ui.playDemo();
+        return;
+      }
+
       switch (e.key.toLowerCase()) {
         case "k":
           e.preventDefault();

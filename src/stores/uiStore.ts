@@ -12,6 +12,8 @@ interface UiState extends LayoutPrefs {
   shortcutsHelpOpen: boolean;
   /** Intent bus: lets the palette/quick actions feed the intelligence panel. */
   requestedIntent: string | null;
+  /** Incremented to trigger the scripted demo reel (for recording). */
+  demoNonce: number;
 
   toggleRightPanel: () => void;
   toggleSidebar: () => void;
@@ -20,6 +22,7 @@ interface UiState extends LayoutPrefs {
   setShortcutsHelp: (open: boolean) => void;
   requestIntent: (intent: string) => void;
   consumeIntent: () => void;
+  playDemo: () => void;
 }
 
 const layout = loadJson<LayoutPrefs>(STORAGE_KEYS.layout, {
@@ -41,6 +44,7 @@ export const useUiStore = create<UiState>((set, get) => ({
   settingsOpen: false,
   shortcutsHelpOpen: false,
   requestedIntent: null,
+  demoNonce: 0,
 
   toggleRightPanel: () => {
     set((s) => ({ rightPanelCollapsed: !s.rightPanelCollapsed }));
@@ -57,4 +61,11 @@ export const useUiStore = create<UiState>((set, get) => ({
   // the activity drawer here.
   requestIntent: (intent) => set({ requestedIntent: intent }),
   consumeIntent: () => set({ requestedIntent: null }),
+  playDemo: () =>
+    set((s) => ({
+      demoNonce: s.demoNonce + 1,
+      rightPanelCollapsed: true,
+      commandPaletteOpen: false,
+      settingsOpen: false,
+    })),
 }));

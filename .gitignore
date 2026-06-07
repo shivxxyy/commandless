@@ -27,3 +27,11 @@ src-tauri/gen
 # Logs
 *.log
 npm-debug.log*
+.vercel
+
+# Video assets (generated/recorded — keep docs + scripts, not binaries)
+video/voiceover/
+video/*.mp4
+video/*.mov
+video/*.aiff
+video/*.m4a

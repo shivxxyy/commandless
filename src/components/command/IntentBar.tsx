@@ -36,6 +36,7 @@ export function IntentBar() {
   const clearConversation = useHistoryStore((s) => s.clearConversation);
   const requestedIntent = useUiStore((s) => s.requestedIntent);
   const consumeIntent = useUiStore((s) => s.consumeIntent);
+  const demoNonce = useUiStore((s) => s.demoNonce);
   const os = useSettingsStore((s) => s.os);
   const shell = useSettingsStore((s) => s.detectedShell);
 
@@ -44,6 +45,15 @@ export function IntentBar() {
   const [explaining, setExplaining] = useState(false);
   const inputRef = useRef<HTMLTextAreaElement>(null);
 
+  // Refs mirror the latest suggestion/status so the async demo runner can read
+  // fresh values without stale closures.
+  const suggestionRef = useRef(state.suggestion);
+  const statusRef = useRef(state.status);
+  useEffect(() => {
+    suggestionRef.current = state.suggestion;
+    statusRef.current = state.status;
+  }, [state.suggestion, state.status]);
+
   useEffect(() => {
     if (requestedIntent) {
       setValue(requestedIntent);
@@ -51,6 +61,64 @@ export function IntentBar() {
       consumeIntent();
     }
   }, [requestedIntent, generate, consumeIntent]);
+
+  // Scripted demo reel for recording the launch video (⌘⇧D / command palette).
+  useEffect(() => {
+    if (demoNonce === 0) return;
+    let cancelled = false;
+    const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
+    const type = async (text: string) => {
+      for (let i = 1; i <= text.length && !cancelled; i++) {
+        setValue(text.slice(0, i));
+        await sleep(40);
+      }
+    };
+    const waitReady = async () => {
+      for (let i = 0; i < 60 && !cancelled; i++) {
+        if (statusRef.current !== "idle" && statusRef.current !== "thinking") return;
+        await sleep(80);
+      }
+    };
+    type DemoStep = { intent: string; run: boolean; hold?: number };
+    const steps: DemoStep[] = [
+      { intent: "find large files here", run: true, hold: 1800 },
+      { intent: "show my git changes", run: true, hold: 1800 },
+      { intent: "show disk usage", run: true, hold: 1800 },
+      { intent: "rename all .jpeg files to .jpg", run: false, hold: 3200 },
+      { intent: "kill the process using port 5173", run: false, hold: 3600 },
+    ];
+    (async () => {
+      await sleep(600);
+      for (const step of steps) {
+        if (cancelled) return;
+        reset();
+        setValue("");
+        await sleep(450);
+        await type(step.intent);
+        await sleep(300);
+        await generate(step.intent);
+        await waitReady();
+        await sleep(step.hold ?? 2200);
+        if (
+          step.run &&
+          suggestionRef.current &&
+          suggestionRef.current.riskLevel !== "dangerous"
+        ) {
+          void run(suggestionRef.current);
+          setValue("");
+          await sleep(2600);
+        }
+      }
+      if (!cancelled) {
+        reset();
+        setValue("");
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [demoNonce]);
 
   const submit = (text?: string) => {
     const intent = (text ?? value).trim();

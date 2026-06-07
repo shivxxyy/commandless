@@ -35,6 +35,7 @@ export function CommandPalette() {
   const setSettingsOpen = useUiStore((s) => s.setSettingsOpen);
   const toggleRightPanel = useUiStore((s) => s.toggleRightPanel);
   const requestIntent = useUiStore((s) => s.requestIntent);
+  const playDemo = useUiStore((s) => s.playDemo);
   const createTab = useTerminalStore((s) => s.createTab);
   const activeTabId = useTerminalStore((s) => s.activeTabId);
   const home = useSettingsStore((s) => s.home);
@@ -78,6 +79,14 @@ export function CommandPalette() {
         keywords: "settings preferences theme ai",
         run: () => setSettingsOpen(true),
       },
+      {
+        id: "play-demo",
+        label: "Play demo reel",
+        group: "Actions",
+        icon: <Sparkles className="h-4 w-4" />,
+        keywords: "demo reel record video showcase play",
+        run: () => playDemo(),
+      },
     ];
 
     const recipeItems: PaletteItem[] = RECIPES.map((r) => ({
@@ -100,6 +109,7 @@ export function CommandPalette() {
     toggleRightPanel,
     setSettingsOpen,
     requestIntent,
+    playDemo,
   ]);
 
   const filtered = useMemo(() => {
