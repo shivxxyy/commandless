@@ -20,14 +20,14 @@ RATE="${RATE:-178}"
 
 # Lines must match SCRIPT.md.
 LINES=(
-  "You know what you want your machine to do. You just don't always remember the command."
-  "So stop memorizing. Meet CommandLess."
-  "Describe it in plain English, and get the exact command, explained before it runs."
-  "Find what's hogging space. Check your git changes. See your disk, instantly."
-  "Need something custom? The A.I. writes the command for you, right in your terminal."
-  "Every command gets a risk label. Dangerous ones need typed confirmation. Nothing runs without you."
+  "You know the command exists. You just can't remember it."
+  "Stop memorizing. Meet CommandLess."
+  "Say what you want in plain English, and get the exact command, explained before it runs."
+  "Free up space. Check your git. Read your disk. Instantly."
+  "Need something custom? The A.I. writes it, right in your terminal."
+  "Every command shows its risk. Dangerous ones need your confirmation. Nothing runs without you."
   "And it's a real terminal. Everything you already do, now with a brain."
-  "CommandLess. Terminal power, no command memorization. Free for Mac and Windows. Link below."
+  "CommandLess. Terminal power, no command memorization. Free for Mac and Windows."
 )
 NAMES=(01-hook 02-meet 03-describe 04-montage 05-ai 06-risk 07-realterm 08-cta)
 
