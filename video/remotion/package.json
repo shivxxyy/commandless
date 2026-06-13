@@ -1,0 +1,23 @@
+{
+  "name": "commandless-launch-video",
+  "version": "1.0.0",
+  "type": "module",
+  "main": "src/index.jsx",
+  "scripts": {
+    "preview": "remotion preview src/index.jsx",
+    "render:remotion": "remotion render src/index.jsx CommandLessLaunch ../CommandLess-final.remotion.mp4 --codec=h264 --video-bitrate=14M --audio-bitrate=192K --pixel-format=yuv420p",
+    "postprocess": "ffmpeg -y -i ../CommandLess-final.remotion.mp4 -c:v libx264 -preset slow -b:v 14M -minrate 14M -maxrate 14M -bufsize 14M -x264-params nal-hrd=cbr:filler=1 -pix_fmt yuv420p -c:a copy -movflags +faststart ../CommandLess-final.mp4",
+    "render": "npm run render:remotion && npm run postprocess"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "@remotion/cli": "^4.0.473",
+    "@remotion/media-utils": "^4.0.473",
+    "react": "^19.2.7",
+    "react-dom": "^19.2.7",
+    "remotion": "^4.0.473"
+  }
+}

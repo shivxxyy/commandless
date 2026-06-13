@@ -67,11 +67,15 @@ export function IntentBar() {
   useEffect(() => {
     if (demoNonce === 0) return;
     let cancelled = false;
+    // Enlarge the terminal font during the reel so recorded output is legible,
+    // then restore it afterward.
+    const origFont = useSettingsStore.getState().fontSize;
+    const setFont = (n: number) => useSettingsStore.getState().update({ fontSize: n });
     const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
     const type = async (text: string) => {
       for (let i = 1; i <= text.length && !cancelled; i++) {
         setValue(text.slice(0, i));
-        await sleep(40);
+        await sleep(28);
       }
     };
     const waitReady = async () => {
@@ -90,6 +94,7 @@ export function IntentBar() {
       { intent: "kill the process using port 5173", run: false, hold: 3800 }, // dangerous
     ];
     (async () => {
+      setFont(18);
       await sleep(600);
       for (const step of steps) {
         if (cancelled) return;
@@ -108,7 +113,7 @@ export function IntentBar() {
         ) {
           void run(suggestionRef.current);
           setValue("");
-          await sleep(2600);
+          await sleep(2200);
         }
       }
       // Final beat: prove it's a real terminal — type a normal command live.
@@ -121,20 +126,20 @@ export function IntentBar() {
           for (const ch of "ls -la") {
             if (cancelled) break;
             await ptyWrite(tab.sessionId, ch);
-            await sleep(70);
+            await sleep(55);
           }
           await sleep(400);
           if (!cancelled) await ptyWrite(tab.sessionId, "\r");
-          await sleep(2600);
+          await sleep(2400);
         }
       }
-      if (!cancelled) {
-        reset();
-        setValue("");
-      }
+      reset();
+      setValue("");
+      setFont(origFont);
     })();
     return () => {
       cancelled = true;
+      setFont(origFont);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [demoNonce]);
